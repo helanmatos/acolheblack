@@ -1,5 +1,6 @@
 // ACOLHE landing page components
 const { useState, useEffect, useRef } = React;
+const WHATS_URL = "https://wa.me/5511999999999?text=Ol%C3%A1%2C%20preciso%20de%20acolhimento";
 
 // ─── Reveal hook ───
 function useReveal() {
