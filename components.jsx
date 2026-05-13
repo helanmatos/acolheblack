@@ -125,24 +125,17 @@ const Icon = {
 // ─── Logo ACOLHE ───
 function AcolheLogo({ color = "white", size = 28 }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-      <div style={{
-        width: size + 6, height: size + 6, borderRadius: "50%",
-        background: color, display: "grid", placeItems: "center",
-        boxShadow: color === "white" ? "0 2px 8px rgba(0,0,0,.08)" : "none"
-      }}>
-        <svg width={size - 4} height={size - 4} viewBox="0 0 24 24" fill="none">
-          <path d="M12 3 C16 7 16 12 12 21 C8 12 8 7 12 3 Z"
-            fill={color === "white" ? "#E84118" : "white"} />
-        </svg>
-      </div>
-      <span style={{
-        fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: size,
-        letterSpacing: "-0.01em", color
-      }}>
-        ACOLHE
-      </span>
-    </div>
+    <img
+      src="logo%20acolhe.png?v=2"
+      alt="ACOLHE — Racismo Zero"
+      style={{
+        height: 144,
+        width: "auto",
+        display: "block",
+        filter: color === "white" ? "none" : "invert(1) brightness(0)",
+        transition: "filter .35s ease",
+      }}
+    />
   );
 }
 
@@ -399,15 +392,15 @@ function DualBoxes() {
     {
       id: "procon",
       label: "PROCON RACIAL",
-      sub: "Racismo e injúria racial em relações de consumo",
+      sub: "Lojas, shoppings, bancos e supermercados são os principais cenários de discriminação racial relatada no Brasil",
       bg: "linear-gradient(135deg, #E84118 0%, #D4745E 100%)",
       border: "#E84118",
       Icon: Icon.Shield,
       lines: [
-        "Sofri racismo em loja ou restaurante",
-        "Fui injuriado durante o atendimento",
-        "Tive serviço negado pela minha cor",
-        "Sofri vigilância abusiva no comércio",
+        "Sofri racismo em loja, restaurante ou shopping",
+        "Fui maltratado em hospital, clínica ou farmácia",
+        "Tive serviço negado ou fui ignorado em supermercado",
+        "Sofri vigilância abusiva ou fui seguido com desconfiança",
       ],
       cta: "Buscar Acolhimento",
       ctaColor: "#E84118",
@@ -425,15 +418,20 @@ function DualBoxes() {
     {
       id: "acolhe-jus",
       label: "ACOLHE JUS",
-      sub: "Assistência Jurídica Especializada",
+      sub: "20 advogados voluntários que acompanham seu caso até o Ministério Público e a Justiça Criminal",
       bg: "linear-gradient(135deg, #2D6A4F 0%, #1A4030 100%)",
       border: "#2D6A4F",
       Icon: Icon.Scales,
       lines: [
         "Sofri racismo no trabalho ou em entrevista",
+        "Fui alvo de abordagem policial abusiva ou racista",
         "Quero registrar ocorrência criminal",
         "Preciso de advogado para o meu caso",
         "Quero acompanhar um processo em andamento",
+      ],
+      extraButtons: [
+        { label: "Preciso de orientação", href: "acolhimento.html" },
+        { label: "Quero conhecer meus direitos", href: "juridico.html#marcos" },
       ],
       cta: "Buscar Acolhimento",
       ctaColor: "#2D6A4F",
@@ -473,10 +471,10 @@ function DualBoxes() {
           display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32,
         }}>
           {items.map((it, i) => (
-            <Reveal key={it.id} delay={i * 120}>
+            <Reveal key={it.id} delay={i * 120} style={{ height: "100%" }}>
               <div className="dual-card" style={{
                 position: "relative", overflow: "hidden",
-                minHeight: 460, padding: 48, borderRadius: 24,
+                height: "100%", minHeight: 460, padding: 48, borderRadius: 24,
                 borderTop: `8px solid ${it.border}`,
                 background: it.bg, color: "white",
                 display: "flex", flexDirection: "column",
@@ -521,6 +519,25 @@ function DualBoxes() {
                   </ul>
                 </div>
                 <div style={{ marginTop: "auto", position: "relative", zIndex: 2 }}>
+                  {it.extraButtons && (
+                    <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 16 }}>
+                      {it.extraButtons.map(btn => (
+                        <a key={btn.label} href={btn.href} style={{
+                          background: "rgba(255,255,255,0.12)",
+                          border: "1px solid rgba(255,255,255,0.35)",
+                          color: "white", padding: "11px 18px", borderRadius: 10,
+                          fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 500,
+                          textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 8,
+                          transition: "background .2s ease",
+                        }}
+                          onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.22)"}
+                          onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.12)"}
+                        >
+                          {btn.label} <Icon.Arrow size={13} color="white" />
+                        </a>
+                      ))}
+                    </div>
+                  )}
                   <button style={{
                     background: "white", color: it.ctaColor, border: "none",
                     padding: "14px 22px", borderRadius: 12,
@@ -541,12 +558,48 @@ function DualBoxes() {
   );
 }
 
+// ─── Stats Bar ───
+function StatsBar() {
+  const stats = [
+    { n: "62,7%", l: "das pessoas negras relataram discriminação em espaços de consumo", src: "PROCON-SP, 2024" },
+    { n: "72%", l: "dos casos ocorrem de forma velada, sem testemunhas nem registro formal", src: "PROCON-SP, 2024" },
+    { n: "750+", l: "atendimentos realizados pelo PROCON Racial no 1º semestre de 2025", src: "Zumbi dos Palmares" },
+    { n: "20", l: "advogados voluntários do ACOLHE JUS prontos para acompanhar seu caso", src: "ACOLHE JUS" },
+  ];
+  return (
+    <section data-screen-label="Stats" style={{ background: "#0A0A0A", padding: "72px 48px" }}>
+      <div style={{ maxWidth: 1320, margin: "0 auto" }}>
+        <Reveal>
+          <div style={{ fontFamily: "Inter, sans-serif", fontSize: 12, fontWeight: 600, letterSpacing: "0.18em", color: "#E84118", textTransform: "uppercase", marginBottom: 44, textAlign: "center" }}>
+            Discriminação racial no consumo em números · PROCON-SP, 2024
+          </div>
+        </Reveal>
+        <div className="timeline-row" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 0 }}>
+          {stats.map((s, i) => (
+            <Reveal key={s.n} delay={i * 100}>
+              <div style={{
+                paddingLeft: i > 0 ? 32 : 0,
+                paddingRight: i < stats.length - 1 ? 32 : 0,
+                borderRight: i < stats.length - 1 ? "1px solid rgba(255,255,255,0.1)" : "none",
+              }}>
+                <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: "clamp(38px, 4.5vw, 60px)", color: "white", letterSpacing: "-0.03em", lineHeight: 1 }}>{s.n}</div>
+                <div style={{ fontFamily: "Inter, sans-serif", fontSize: 14, lineHeight: 1.6, color: "rgba(255,255,255,0.68)", margin: "14px 0 8px", textWrap: "pretty" }}>{s.l}</div>
+                <div style={{ fontFamily: "Inter, sans-serif", fontSize: 11, color: "#E84118", fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase" }}>{s.src}</div>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ─── Three services ───
 function Services() {
   const cards = [
     {
       id: "jur", title: "JURÍDICO", color: "#2D6A4F", Icon: Icon.Justice,
-      text: "Orientação legal e representação em processos cíveis, criminais e trabalhistas.",
+      text: "Orientação legal e representação em processos cíveis, criminais, trabalhistas e junto ao PROCON Racial. 20 advogados voluntários do ACOLHE JUS.",
     },
     {
       id: "psi", title: "PSICOLÓGICO", color: "#D4745E", Icon: Icon.HeartMind,
@@ -1039,6 +1092,7 @@ function App() {
       <Nav />
       <Hero />
       <DualBoxes />
+      <StatsBar />
       <Services />
       <Timeline />
       <Quote />

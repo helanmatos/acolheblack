@@ -66,13 +66,18 @@ const PgIcon = {
 
 function PgLogo({ color = "white", size = 26 }) {
   return (
-    <a href="index.html" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
-      <div style={{ width: size + 6, height: size + 6, borderRadius: "50%", background: color, display: "grid", placeItems: "center", boxShadow: color === "white" ? "0 2px 8px rgba(0,0,0,.08)" : "none" }}>
-        <svg width={size - 4} height={size - 4} viewBox="0 0 24 24" fill="none">
-          <path d="M12 3 C16 7 16 12 12 21 C8 12 8 7 12 3 Z" fill={color === "white" ? "#E84118" : "white"} />
-        </svg>
-      </div>
-      <span style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: size, letterSpacing: "-0.01em", color }}>ACOLHE</span>
+    <a href="index.html" style={{ display: "inline-flex", alignItems: "center", textDecoration: "none" }}>
+      <img
+        src="logo%20acolhe.png?v=2"
+        alt="ACOLHE — Racismo Zero"
+        style={{
+          height: 144,
+          width: "auto",
+          display: "block",
+          filter: color === "white" ? "none" : "invert(1) brightness(0)",
+          transition: "filter .35s ease",
+        }}
+      />
     </a>
   );
 }
