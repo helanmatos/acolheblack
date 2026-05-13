@@ -21,7 +21,7 @@ function FalarDandaraSection() {
 
   return (
     <section id="falar-dandara" data-screen-label="01 Falar com Dandara" style={{
-      minHeight: "92vh", paddingTop: 110, paddingBottom: 80, position: "relative", overflow: "hidden",
+      minHeight: "92vh", paddingTop: 200, paddingBottom: 80, position: "relative", overflow: "hidden",
       background: "linear-gradient(135deg, #E84118 0%, #D4745E 100%)",
     }}>
       <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.18 }} viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
