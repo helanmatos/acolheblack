@@ -26,10 +26,14 @@ function App() {
   ];
   const glossary = [
     { t: "Racismo", d: "Crime tipificado pela Lei 7.716/89, com pena de 1 a 3 anos de reclusão. Imprescritível e inafiançável." },
-    { t: "Injúria racial", d: "Ofensa à honra com elementos raciais. Tipificada no art. 140 §3º do Código Penal — desde 2023, equiparada ao racismo." },
+    { t: "Injúria racial", d: "Ofensa à honra com elementos raciais. Desde a Lei 14.532/2023, equiparada ao racismo: inafiançável, imprescritível e com pena de 2 a 5 anos." },
     { t: "Boletim de Ocorrência", d: "Registro formal feito em delegacia. Primeiro passo para a investigação criminal." },
     { t: "Dano moral", d: "Reparação civil pelo sofrimento causado. Cabe em paralelo à esfera criminal." },
-    { t: "Direitos do consumidor", d: "Conjunto de proteções (CDC) acionáveis quando o racismo ocorre em relações de consumo, via Procon." },
+    { t: "Direitos do consumidor", d: "Conjunto de proteções (CDC) acionáveis quando o racismo ocorre em relações de consumo, via PROCON Racial." },
+    { t: "Estatuto da Igualdade Racial", d: "Lei 12.288/2010. Institui medidas e políticas para combater discriminação e promover a igualdade étnico-racial em todas as áreas da vida social." },
+    { t: "PROCON Racial", d: "Primeiro canal exclusivo do Brasil para denúncias de discriminação racial no consumo, criado em 2021 pela Universidade Zumbi dos Palmares e a Fundação PROCON-SP." },
+    { t: "Mediação racial", d: "Processo voluntário, sigiloso e 3 a 5 vezes mais rápido que o litígio judicial. Mediadores com letramento racial garantem que o processo seja culturalmente sensível." },
+    { t: "Protocolo Antirracista", d: "Exigido pela Lei 18.427/2026-SP para estabelecimentos comerciais de grande circulação. Inclui treinamento de equipes, canais de denúncia e fluxos de acolhimento." },
   ];
   const filtered = glossary.filter(g => !searchTerm || g.t.toLowerCase().includes(searchTerm.toLowerCase()) || g.d.toLowerCase().includes(searchTerm.toLowerCase()));
 
@@ -106,8 +110,32 @@ function App() {
         </div>
       </Section>
 
+      {/* Marcos Legais */}
+      <Section id="marcos" label="03 Marcos Legais" eyebrow="Marcos Legais" title="A lei é o seu escudo. Conheça seus direitos.">
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 16 }} className="svc-grid">
+          {[
+            { year: "1988", title: "Constituição Federal", desc: "Criminaliza o racismo (art. 5º, XLII) — crime inafiançável e imprescritível. Veda discriminação como objetivo fundamental da República (art. 3º, IV)." },
+            { year: "1989", title: "Lei 7.716 — Lei do Racismo", desc: "Define crimes de preconceito de raça ou cor, com penas de reclusão de 1 a 3 anos. Base do direito antirracista penal no Brasil." },
+            { year: "2010", title: "Lei 12.288 — Estatuto da Igualdade Racial", desc: "Institui medidas e políticas para combater discriminação e promover a igualdade étnico-racial em todas as áreas da vida social." },
+            { year: "2022", title: "Decreto 10.932 — Convenção Interamericana", desc: "Promulga a Convenção Interamericana contra o Racismo, a Discriminação Racial e Formas Correlatas de Intolerância." },
+            { year: "2023", title: "Lei 14.532 — Injúria Racial", desc: "Equipara a injúria racial ao crime de racismo: inafiançável, imprescritível, com pena de 2 a 5 anos de reclusão." },
+            { year: "2024", title: "Resolução CNJ 598 — Perspectiva Racial", desc: "Institui protocolo obrigatório para todo o Judiciário julgar com perspectiva racial, enfrentando o racismo estrutural nos processos." },
+            { year: "Dez/2025", title: "ADPF 973 — STF", desc: "Decisão unânime do STF reconhece o racismo estrutural no Brasil e determina revisão do Plano Nacional de Combate ao Racismo e criação de protocolos em todo o Judiciário." },
+            { year: "2026", title: "Lei 18.427/SP — Protocolo Antirracista", desc: "Obriga estabelecimentos comerciais de grande circulação a adotarem protocolo antirracista, treinar equipes e criar canais qualificados de denúncia e acolhimento." },
+          ].map(m => (
+            <div key={m.year} style={{ background: "white", borderRadius: 14, padding: 24, display: "flex", gap: 18, alignItems: "flex-start" }}>
+              <div style={{ flex: "0 0 auto", background: "#2D6A4F", color: "white", borderRadius: 10, padding: "8px 14px", fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 14, letterSpacing: "-0.01em", whiteSpace: "nowrap" }}>{m.year}</div>
+              <div>
+                <h3 style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 17, margin: "0 0 6px", letterSpacing: "-0.01em" }}>{m.title}</h3>
+                <p style={{ fontFamily: "Inter, sans-serif", fontSize: 14, lineHeight: 1.55, color: "rgba(10,10,10,0.7)", margin: 0, textWrap: "pretty" }}>{m.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Section>
+
       {/* Glossário */}
-      <Section id="glossario" label="03 Glossário" eyebrow="Glossário" title="Termos jurídicos, em linguagem clara.">
+      <Section id="glossario" label="04 Glossário" eyebrow="Glossário" title="Termos jurídicos, em linguagem clara.">
         <input value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Buscar termo…" style={{ width: "100%", maxWidth: 480, border: "1px solid rgba(10,10,10,0.12)", borderRadius: 12, padding: "14px 16px", fontFamily: "Inter, sans-serif", fontSize: 15, outline: "none", background: "white", marginBottom: 28 }} />
         <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 16 }} className="svc-grid">
           {filtered.map(g => (

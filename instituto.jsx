@@ -57,9 +57,9 @@ function App() {
       <ISection id="quem-somos" label="01 Quem somos" eyebrow="Quem somos" title="Nascemos da urgência. Crescemos pela escuta.">
         <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: 48, alignItems: "start" }} className="svc-grid">
           <p style={{ fontFamily: "Inter, sans-serif", fontSize: 17, lineHeight: 1.65, color: "rgba(10,10,10,0.78)", margin: 0, textWrap: "pretty" }}>
-            Em 2021, um grupo de advogadas, psicólogas e ativistas se reuniu na Faculdade Zumbi dos Palmares para responder a uma realidade dura: <strong>vítimas de racismo no Brasil raramente encontram acolhimento e justiça em um mesmo lugar</strong>. Elas precisavam contar a história várias vezes, em órgãos diferentes, sem garantia de resposta.
+            O ACOLHE é uma iniciativa da <strong>Universidade Zumbi dos Palmares</strong> — primeira instituição de ensino superior do Brasil com foco na promoção da igualdade racial, fundada em 2003 em São Paulo. Em 2021, em parceria com a Fundação PROCON-SP, a Zumbi criou o <strong>PROCON Racial</strong>: o primeiro canal exclusivo do Brasil para denúncias de discriminação racial no consumo.
             <br /><br />
-            O ACOLHE nasceu para mudar isso. Em uma só rede, oferecemos escuta, primeiros cuidados, orientação jurídica e acompanhamento até o desfecho. Nosso compromisso é com a dignidade — e com a transformação estrutural que cada caso individual carrega.
+            O ACOLHE reúne em uma só rede escuta qualificada, cuidado psicológico, orientação jurídica pelo ACOLHE JUS — com 20 advogados voluntários — e a <strong>Câmara de Mediação Racial</strong>, mecanismo especializado que resolve conflitos 3 a 5 vezes mais rápido que a via judicial. Nosso compromisso é com a dignidade e com a transformação estrutural que cada caso individual carrega.
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             {[
@@ -87,6 +87,32 @@ function App() {
               <p style={{ fontFamily: "Inter, sans-serif", fontSize: 13, lineHeight: 1.5, color: "rgba(10,10,10,0.7)", margin: 0 }}>{m.b}</p>
             </div>
           ))}
+        </div>
+      </ISection>
+
+      {/* Trajetória */}
+      <ISection id="trajetoria" label="02 Trajetória" eyebrow="Trajetória" title="Uma década construindo respostas concretas ao racismo." bg="white">
+        <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+          {[
+            { date: "Jun/2020", title: "Movimento AR e Manifesto Vidas Negras Importam", desc: "A Zumbi lidera articulação nacional pelo direito à vida e à dignidade da população negra, reunindo dez metas estratégicas." },
+            { date: "Nov/2020", title: "Programa Segurança Sem Preconceito", desc: "Em parceria com FENAVIST, ABSEG e ABCFV, a Zumbi forma agentes de segurança privada em letramento racial e integra grupo de trabalho do CNJ." },
+            { date: "Nov/2021", title: "PROCON Racial — primeiro no Brasil", desc: "Em parceria com a Fundação PROCON-SP, a Zumbi cria o primeiro canal exclusivo do Brasil para denúncias de discriminação racial no consumo, com acolhimento qualificado." },
+            { date: "Mar/2022", title: "Programa Racismo Zero nas Relações de Consumo", desc: "Lançado no Dia Internacional de Luta Contra a Discriminação Racial. Articula PROCON Racial, Manual Antirracista no Varejo e Projeto Acolhe." },
+            { date: "Abr/2023", title: "Campanha Notas do Respeito", desc: "Em parceria com a Agência Grey Brasil, a Zumbi transforma a nota fiscal em instrumento de conscientização e canal de orientação jurídica e psicológica." },
+            { date: "Mar/2024", title: "Bolsa Antirracista", desc: "A peça, criada pela estilista Naya Violeta, traduz a Lei 14.532/2023 em linguagem cotidiana e direciona consumidores ao acolhimento especializado." },
+            { date: "2026", title: "Câmara de Mediação Racial", desc: "Em parceria com a Faleck & Associados, nasce o mecanismo especializado de prevenção e resolução de conflitos de consumo com viés racial." },
+          ].map((m, i) => (
+            <div key={i} style={{ display: "grid", gridTemplateColumns: "160px 1fr", gap: 24, padding: "24px 0", borderTop: "1px solid rgba(10,10,10,0.08)", alignItems: "start" }}>
+              <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 14, color: "#E84118", paddingTop: 3 }}>{m.date}</div>
+              <div>
+                <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 600, fontSize: 18, marginBottom: 6, letterSpacing: "-0.01em" }}>{m.title}</div>
+                <div style={{ fontFamily: "Inter, sans-serif", fontSize: 14, lineHeight: 1.6, color: "rgba(10,10,10,0.7)", textWrap: "pretty" }}>{m.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div style={{ marginTop: 8, padding: "12px 0", borderTop: "1px solid rgba(10,10,10,0.08)", fontFamily: "Inter, sans-serif", fontSize: 12, color: "rgba(10,10,10,0.45)" }}>
+          Fonte: Universidade Zumbi dos Palmares — Núcleo Segurança do Futuro, Memória das Ações Afirmativas (2020–2026).
         </div>
       </ISection>
 
