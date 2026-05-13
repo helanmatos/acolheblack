@@ -33,7 +33,7 @@ function App() {
       <INav activePath="instituto.html" />
 
       {/* Hero */}
-      <section style={{ minHeight: "60vh", paddingTop: 140, paddingBottom: 80, background: "#0A0A0A", color: "white", position: "relative", overflow: "hidden" }}>
+      <section style={{ minHeight: "60vh", paddingTop: 200, paddingBottom: 80, background: "#0A0A0A", color: "white", position: "relative", overflow: "hidden" }}>
         <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.18 }} viewBox="0 0 1440 600" preserveAspectRatio="xMidYMid slice">
           <circle cx="1280" cy="120" r="180" fill="#E84118" />
           <circle cx="160" cy="500" r="120" fill="#2D6A4F" />

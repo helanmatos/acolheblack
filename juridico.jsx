@@ -42,7 +42,7 @@ function App() {
       <JNav activePath="juridico.html" />
 
       {/* Hero */}
-      <section style={{ minHeight: "62vh", paddingTop: 140, paddingBottom: 80, background: "linear-gradient(135deg, #2D6A4F 0%, #1A4030 100%)", color: "white", position: "relative", overflow: "hidden" }}>
+      <section style={{ minHeight: "62vh", paddingTop: 200, paddingBottom: 80, background: "linear-gradient(135deg, #2D6A4F 0%, #1A4030 100%)", color: "white", position: "relative", overflow: "hidden" }}>
         <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.16 }} viewBox="0 0 1440 600" preserveAspectRatio="xMidYMid slice">
           <line x1="200" y1="0" x2="200" y2="600" stroke="white" strokeWidth="1.5" />
           <line x1="1240" y1="0" x2="1240" y2="600" stroke="white" strokeWidth="1.5" />

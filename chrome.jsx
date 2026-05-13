@@ -121,15 +121,30 @@ function PgDandaraAvatar({ size = 360, mini = false }) {
 
 function PgNav({ activePath = "" }) {
   const [scrolled, setScrolled] = usePgState(false);
+  const [hidden, setHidden] = usePgState(false);
+  const lastY = usePgRef(0);
+
   usePgEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 40);
+      if (y > lastY.current && y > 120) setHidden(true);
+      else setHidden(false);
+      lastY.current = y;
+    };
+    const onMouseMove = (e) => { if (e.clientY < 60) setHidden(false); };
     window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("mousemove", onMouseMove);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("mousemove", onMouseMove);
+    };
   }, []);
   return (
     <nav style={{
       position: "fixed", top: 0, left: 0, right: 0, zIndex: 50,
       padding: scrolled ? "14px 48px" : "22px 48px",
+      transform: hidden ? "translateY(-100%)" : "translateY(0)",
       transition: "all .35s ease",
       background: scrolled ? "rgba(248,245,241,0.94)" : "transparent",
       backdropFilter: scrolled ? "blur(14px)" : "none",

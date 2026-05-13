@@ -218,10 +218,24 @@ function DandaraAvatar({ size = 360, mini = false }) {
 // ─── Nav ───
 function Nav() {
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const lastY = useRef(0);
+
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 40);
+      if (y > lastY.current && y > 120) setHidden(true);
+      else setHidden(false);
+      lastY.current = y;
+    };
+    const onMouseMove = (e) => { if (e.clientY < 60) setHidden(false); };
     window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("mousemove", onMouseMove);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("mousemove", onMouseMove);
+    };
   }, []);
   const links = [
     { label: "Acolhimento", href: "acolhimento.html" },
@@ -233,6 +247,7 @@ function Nav() {
     <nav style={{
       position: "fixed", top: 0, left: 0, right: 0, zIndex: 50,
       padding: scrolled ? "14px 48px" : "22px 48px",
+      transform: hidden ? "translateY(-100%)" : "translateY(0)",
       transition: "all .35s ease",
       background: scrolled ? "rgba(248,245,241,0.92)" : "transparent",
       backdropFilter: scrolled ? "blur(14px)" : "none",
@@ -273,7 +288,7 @@ function Hero() {
     <section data-screen-label="01 Hero" style={{
       minHeight: "92vh", position: "relative", overflow: "hidden",
       background: "linear-gradient(135deg, #E84118 0%, #D4745E 100%)",
-      display: "flex", alignItems: "center", paddingTop: 80,
+      display: "flex", alignItems: "center", paddingTop: 200,
     }}>
       {/* texture noise */}
       <div style={{
