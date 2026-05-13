@@ -33,7 +33,7 @@ function App() {
       <INav activePath="instituto.html" />
 
       {/* Hero */}
-      <section style={{ minHeight: "60vh", paddingTop: 200, paddingBottom: 80, background: "#0A0A0A", color: "white", position: "relative", overflow: "hidden" }}>
+      <section className="page-hero" style={{ minHeight: "60vh", paddingTop: 200, paddingBottom: 80, background: "#0A0A0A", color: "white", position: "relative", overflow: "hidden" }}>
         <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.18 }} viewBox="0 0 1440 600" preserveAspectRatio="xMidYMid slice">
           <circle cx="1280" cy="120" r="180" fill="#E84118" />
           <circle cx="160" cy="500" r="120" fill="#2D6A4F" />
@@ -102,7 +102,7 @@ function App() {
             { date: "Mar/2024", title: "Bolsa Antirracista", desc: "A peça, criada pela estilista Naya Violeta, traduz a Lei 14.532/2023 em linguagem cotidiana e direciona consumidores ao acolhimento especializado." },
             { date: "2026", title: "Câmara de Mediação Racial", desc: "Em parceria com a Faleck & Associados, nasce o mecanismo especializado de prevenção e resolução de conflitos de consumo com viés racial." },
           ].map((m, i) => (
-            <div key={i} style={{ display: "grid", gridTemplateColumns: "160px 1fr", gap: 24, padding: "24px 0", borderTop: "1px solid rgba(10,10,10,0.08)", alignItems: "start" }}>
+            <div key={i} className="traj-row" style={{ display: "grid", gridTemplateColumns: "160px 1fr", gap: 24, padding: "24px 0", borderTop: "1px solid rgba(10,10,10,0.08)", alignItems: "start" }}>
               <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 14, color: "#E84118", paddingTop: 3 }}>{m.date}</div>
               <div>
                 <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 600, fontSize: 18, marginBottom: 6, letterSpacing: "-0.01em" }}>{m.title}</div>
@@ -137,7 +137,7 @@ function App() {
       <ISection id="imprensa" label="03 Imprensa" eyebrow="Na imprensa" title="O que estão dizendo sobre o ACOLHE.">
         <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
           {press.map((p, i) => (
-            <a key={i} href="#" style={{ display: "grid", gridTemplateColumns: "120px 200px 1fr auto", gap: 24, padding: "22px 0", borderTop: "1px solid rgba(10,10,10,0.1)", textDecoration: "none", color: "#0A0A0A", alignItems: "center" }}>
+            <a key={i} href="#" className="press-row" style={{ display: "grid", gridTemplateColumns: "120px 200px 1fr auto", gap: 24, padding: "22px 0", borderTop: "1px solid rgba(10,10,10,0.1)", textDecoration: "none", color: "#0A0A0A", alignItems: "center" }}>
               <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, color: "rgba(10,10,10,0.55)" }}>{p.date}</span>
               <span style={{ fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: "#E84118" }}>{p.outlet}</span>
               <span style={{ fontFamily: "Syne, sans-serif", fontWeight: 600, fontSize: 19, letterSpacing: "-0.01em", textWrap: "balance" }}>{p.title}</span>

@@ -219,6 +219,7 @@ function DandaraAvatar({ size = 360, mini = false }) {
 function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const lastY = useRef(0);
 
   useEffect(() => {
@@ -244,17 +245,18 @@ function Nav() {
     { label: "Instituto", href: "instituto.html" },
   ];
   return (
+    <>
     <nav style={{
       position: "fixed", top: 0, left: 0, right: 0, zIndex: 50,
       padding: scrolled ? "14px 48px" : "22px 48px",
       transform: hidden ? "translateY(-100%)" : "translateY(0)",
       transition: "all .35s ease",
-      background: scrolled ? "rgba(248,245,241,0.92)" : "transparent",
-      backdropFilter: scrolled ? "blur(14px)" : "none",
-      borderBottom: scrolled ? "1px solid rgba(10,10,10,0.06)" : "1px solid transparent",
+      background: scrolled || menuOpen ? "rgba(248,245,241,0.97)" : "transparent",
+      backdropFilter: scrolled || menuOpen ? "blur(14px)" : "none",
+      borderBottom: scrolled || menuOpen ? "1px solid rgba(10,10,10,0.06)" : "1px solid transparent",
       display: "flex", alignItems: "center", justifyContent: "space-between",
     }}>
-      <AcolheLogo color={scrolled ? "#0A0A0A" : "white"} size={22} />
+      <AcolheLogo color={scrolled || menuOpen ? "#0A0A0A" : "white"} size={22} />
       <div className="nav-links" style={{ display: "flex", gap: 32, alignItems: "center" }}>
         {links.map(l => (
           <a key={l.label} href={l.href} style={{
@@ -272,13 +274,40 @@ function Nav() {
           cursor: "pointer", letterSpacing: "0.02em",
         }}>Falar agora</button>
       </div>
-      <button className="nav-mobile" style={{
+      <button className="nav-mobile" onClick={() => setMenuOpen(o => !o)} style={{
         display: "none", background: "transparent", border: "none", cursor: "pointer",
-        color: scrolled ? "#0A0A0A" : "white"
+        padding: 4,
       }}>
-        <Icon.Menu color={scrolled ? "#0A0A0A" : "white"} />
+        {menuOpen
+          ? <Icon.Close color={scrolled || menuOpen ? "#0A0A0A" : "white"} size={24} />
+          : <Icon.Menu color={scrolled || menuOpen ? "#0A0A0A" : "white"} />}
       </button>
     </nav>
+    {/* Mobile slide-down menu */}
+    <div style={{
+      position: "fixed", top: 0, left: 0, right: 0, zIndex: 49,
+      background: "rgba(248,245,241,0.97)", backdropFilter: "blur(14px)",
+      paddingTop: 80, paddingBottom: 32, paddingLeft: 24, paddingRight: 24,
+      transform: menuOpen ? "translateY(0)" : "translateY(-110%)",
+      transition: "transform .35s cubic-bezier(.2,.7,.2,1)",
+      borderBottom: "1px solid rgba(10,10,10,0.08)",
+      display: "flex", flexDirection: "column", gap: 4,
+    }}>
+      {links.map(l => (
+        <a key={l.label} href={l.href} onClick={() => setMenuOpen(false)} style={{
+          fontFamily: "Inter, sans-serif", fontSize: 18, fontWeight: 600,
+          color: "#0A0A0A", textDecoration: "none", padding: "14px 0",
+          borderBottom: "1px solid rgba(10,10,10,0.07)", letterSpacing: "-0.01em",
+        }}>{l.label}</a>
+      ))}
+      <a href={WHATS_URL} target="_blank" rel="noopener" onClick={() => setMenuOpen(false)} style={{
+        marginTop: 20, background: "#E84118", color: "white",
+        padding: "16px 22px", borderRadius: 14, textAlign: "center",
+        fontFamily: "Inter, sans-serif", fontSize: 16, fontWeight: 700,
+        textDecoration: "none", letterSpacing: "0.01em",
+      }}>Falar agora</a>
+    </div>
+    </>
   );
 }
 

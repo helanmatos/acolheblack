@@ -20,7 +20,7 @@ function FalarDandaraSection() {
   const quick = ["Sofri racismo agora", "Preciso de orientação", "Quero denunciar"];
 
   return (
-    <section id="falar-dandara" data-screen-label="01 Falar com Dandara" style={{
+    <section id="falar-dandara" data-screen-label="01 Falar com Dandara" className="page-hero" style={{
       minHeight: "92vh", paddingTop: 200, paddingBottom: 80, position: "relative", overflow: "hidden",
       background: "linear-gradient(135deg, #E84118 0%, #D4745E 100%)",
     }}>

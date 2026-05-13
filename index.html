@@ -47,12 +47,18 @@
     .timeline-row { grid-template-columns: 1fr 1fr !important; row-gap: 40px; }
     .timeline-line { display: none; }
     .footer-grid { grid-template-columns: 1fr 1fr !important; }
-    section { padding-left: 24px !important; padding-right: 24px !important; }
+    section { padding-left: 24px !important; padding-right: 24px !important; padding-top: 60px !important; padding-bottom: 60px !important; }
     nav { padding-left: 24px !important; padding-right: 24px !important; }
+    nav img { height: 64px !important; }
+    [data-screen-label="01 Hero"] { padding-top: 120px !important; padding-bottom: 48px !important; }
+    [data-screen-label="Stats"] { padding-top: 48px !important; padding-bottom: 48px !important; }
+    .dual-card { padding: 28px !important; }
+    .dual-card h3 { font-size: 26px !important; }
   }
   @media (max-width: 600px) {
     .timeline-row { grid-template-columns: 1fr !important; }
     .footer-grid { grid-template-columns: 1fr !important; gap: 36px !important; }
+    .footer-grid > div:first-child { grid-column: 1 !important; }
   }
 </style>
 </head>

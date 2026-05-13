@@ -62,6 +62,7 @@ const PgIcon = {
   Close: ({ size = 18, color = "white" }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none"><path d="M5 5 L19 19 M19 5 L5 19" stroke={color} strokeWidth="2.2" strokeLinecap="round" /></svg>),
   Arrow: ({ size = 16, color = "currentColor" }) => (<svg width={size} height={size} viewBox="0 0 16 16" fill="none"><path d="M2 8 H13 M9 4 L13 8 L9 12" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>),
   Instagram: ({ size = 20, color = "currentColor" }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="5" stroke={color} strokeWidth="1.8" /><circle cx="12" cy="12" r="4" stroke={color} strokeWidth="1.8" /><circle cx="17.5" cy="6.5" r="1" fill={color} /></svg>),
+  Menu: ({ size = 22, color = "currentColor" }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none"><path d="M3 7 H21 M3 12 H21 M3 17 H21" stroke={color} strokeWidth="2" strokeLinecap="round" /></svg>),
 };
 
 function PgLogo({ color = "white", size = 26 }) {
@@ -122,6 +123,7 @@ function PgDandaraAvatar({ size = 360, mini = false }) {
 function PgNav({ activePath = "" }) {
   const [scrolled, setScrolled] = usePgState(false);
   const [hidden, setHidden] = usePgState(false);
+  const [menuOpen, setMenuOpen] = usePgState(false);
   const lastY = usePgRef(0);
 
   usePgEffect(() => {
@@ -141,17 +143,18 @@ function PgNav({ activePath = "" }) {
     };
   }, []);
   return (
+    <>
     <nav style={{
       position: "fixed", top: 0, left: 0, right: 0, zIndex: 50,
       padding: scrolled ? "14px 48px" : "22px 48px",
       transform: hidden ? "translateY(-100%)" : "translateY(0)",
       transition: "all .35s ease",
-      background: scrolled ? "rgba(248,245,241,0.94)" : "transparent",
-      backdropFilter: scrolled ? "blur(14px)" : "none",
-      borderBottom: scrolled ? "1px solid rgba(10,10,10,0.06)" : "1px solid transparent",
+      background: scrolled || menuOpen ? "rgba(248,245,241,0.97)" : "transparent",
+      backdropFilter: scrolled || menuOpen ? "blur(14px)" : "none",
+      borderBottom: scrolled || menuOpen ? "1px solid rgba(10,10,10,0.06)" : "1px solid transparent",
       display: "flex", alignItems: "center", justifyContent: "space-between",
     }}>
-      <PgLogo color={scrolled ? "#0A0A0A" : "white"} size={22} />
+      <PgLogo color={scrolled || menuOpen ? "#0A0A0A" : "white"} size={22} />
       <div className="nav-links" style={{ display: "flex", gap: 28, alignItems: "center" }}>
         {PAGE_LINKS.map(l => {
           const active = activePath === l.href;
@@ -175,7 +178,44 @@ function PgNav({ activePath = "" }) {
           textDecoration: "none", letterSpacing: "0.02em",
         }}>Falar agora</a>
       </div>
+      <button className="nav-mobile" onClick={() => setMenuOpen(o => !o)} style={{
+        display: "none", background: "transparent", border: "none", cursor: "pointer",
+        padding: 4,
+      }}>
+        {menuOpen
+          ? <PgIcon.Close color={scrolled || menuOpen ? "#0A0A0A" : "white"} size={24} />
+          : <PgIcon.Menu color={scrolled || menuOpen ? "#0A0A0A" : "white"} />}
+      </button>
     </nav>
+    {/* Mobile slide-down menu */}
+    <div style={{
+      position: "fixed", top: 0, left: 0, right: 0, zIndex: 49,
+      background: "rgba(248,245,241,0.97)", backdropFilter: "blur(14px)",
+      paddingTop: 80, paddingBottom: 32, paddingLeft: 24, paddingRight: 24,
+      transform: menuOpen ? "translateY(0)" : "translateY(-110%)",
+      transition: "transform .35s cubic-bezier(.2,.7,.2,1)",
+      borderBottom: "1px solid rgba(10,10,10,0.08)",
+      display: "flex", flexDirection: "column", gap: 4,
+    }}>
+      {PAGE_LINKS.map(l => {
+        const active = activePath === l.href;
+        return (
+          <a key={l.href} href={l.href} onClick={() => setMenuOpen(false)} style={{
+            fontFamily: "Inter, sans-serif", fontSize: 18, fontWeight: active ? 700 : 600,
+            color: active ? "#E84118" : "#0A0A0A", textDecoration: "none",
+            padding: "14px 0", borderBottom: "1px solid rgba(10,10,10,0.07)",
+            letterSpacing: "-0.01em",
+          }}>{l.label}</a>
+        );
+      })}
+      <a href={WHATS_URL} target="_blank" rel="noopener" onClick={() => setMenuOpen(false)} style={{
+        marginTop: 20, background: "#E84118", color: "white",
+        padding: "16px 22px", borderRadius: 14, textAlign: "center",
+        fontFamily: "Inter, sans-serif", fontSize: 16, fontWeight: 700,
+        textDecoration: "none", letterSpacing: "0.01em",
+      }}>Falar agora</a>
+    </div>
+    </>
   );
 }
 
