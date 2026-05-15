@@ -314,6 +314,64 @@ function Nav() {
 
 // ─── Hero ───
 function Hero() {
+  const videoRef = useRef(null);
+  const hasLeftRef = useRef(false);
+  const soundInitedRef = useRef(false);
+  const [showPlay, setShowPlay] = useState(false);
+  const [showSoundPrompt, setShowSoundPrompt] = useState(false);
+
+  const handleVideoCanPlay = () => {
+    if (soundInitedRef.current) return;
+    soundInitedRef.current = true;
+    const el = videoRef.current;
+    if (!el) return;
+    if (localStorage.getItem("dandara_sound") === "1") {
+      el.muted = false;
+    } else {
+      setShowSoundPrompt(true);
+    }
+  };
+
+  useEffect(() => {
+    const el = videoRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          if (!hasLeftRef.current) {
+            el.play().catch(() => {});
+          }
+        } else {
+          if (!el.paused) {
+            el.pause();
+            hasLeftRef.current = true;
+            setShowSoundPrompt(false);
+            setShowPlay(true);
+          }
+        }
+      },
+      { threshold: 0.2 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  const handleManualPlay = () => {
+    const el = videoRef.current;
+    if (!el) return;
+    el.play().catch(() => {});
+    setShowPlay(false);
+    if (localStorage.getItem("dandara_sound") !== "1") setShowSoundPrompt(true);
+  };
+
+  const activateSound = () => {
+    const el = videoRef.current;
+    if (!el) return;
+    el.muted = false;
+    localStorage.setItem("dandara_sound", "1");
+    setShowSoundPrompt(false);
+  };
+
   return (
     <section data-screen-label="01 Hero" style={{
       minHeight: "92vh", position: "relative", overflow: "hidden",
@@ -398,31 +456,65 @@ function Hero() {
             }}>
               <div style={{
                 width: "100%", height: "100%", borderRadius: "50%", overflow: "hidden",
-                background: "linear-gradient(180deg, #F8E2D5 0%, #E8B89E 100%)",
+                background: "#000",
                 position: "relative"
               }}>
-                <DandaraAvatar size={360} />
+                <video
+                  ref={videoRef}
+                  src="dandara.mp4"
+                  autoPlay
+                  muted
+                  playsInline
+                  loop
+                  onCanPlay={handleVideoCanPlay}
+                  style={{
+                    width: "100%", height: "100%",
+                    objectFit: "cover",
+                    display: "block",
+                  }}
+                />
+                {showPlay && (
+                  <button
+                    onClick={handleManualPlay}
+                    style={{
+                      position: "absolute", inset: 0,
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      background: "rgba(0,0,0,0.35)",
+                      border: "none", cursor: "pointer",
+                      borderRadius: "50%",
+                    }}
+                  >
+                    <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+                      <circle cx="28" cy="28" r="28" fill="rgba(255,255,255,0.18)" />
+                      <circle cx="28" cy="28" r="22" fill="rgba(255,255,255,0.85)" />
+                      <path d="M23 20 L38 28 L23 36 Z" fill="#E84118" />
+                    </svg>
+                  </button>
+                )}
+                {showSoundPrompt && (
+                  <button
+                    onClick={activateSound}
+                    style={{
+                      position: "absolute", inset: 0,
+                      display: "flex", flexDirection: "column",
+                      alignItems: "center", justifyContent: "center", gap: 10,
+                      background: "rgba(0,0,0,0.52)", backdropFilter: "blur(4px)",
+                      border: "none", cursor: "pointer", borderRadius: "50%",
+                    }}
+                  >
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+                      <path d="M11 5 L6 9 H2 V15 H6 L11 19 V5Z" fill="white" />
+                      <path d="M15.5 8.5 C17 10 17 14 15.5 15.5" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none"/>
+                      <path d="M18.5 6 C21.5 9 21.5 15 18.5 18" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none"/>
+                    </svg>
+                    <span style={{
+                      fontFamily: "Inter, sans-serif", fontSize: 11, fontWeight: 600,
+                      color: "white", letterSpacing: "0.06em", textTransform: "uppercase",
+                      textAlign: "center", lineHeight: 1.3, maxWidth: 100,
+                    }}>Toque para ativar o som</span>
+                  </button>
+                )}
               </div>
-            </div>
-            {/* speech tag */}
-            <div style={{
-              position: "absolute", bottom: 8, right: -10,
-              background: "white", color: "#0A0A0A",
-              padding: "12px 16px", borderRadius: 16,
-              boxShadow: "0 12px 30px rgba(0,0,0,0.18)",
-              fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 500,
-              maxWidth: 220, lineHeight: 1.4,
-              animation: "floaty 6s ease-in-out infinite reverse"
-            }}>
-              <div style={{ fontWeight: 600, color: "#E84118", fontSize: 11, letterSpacing: "0.08em", marginBottom: 4 }}>
-                DANDARA · IA DE ACOLHIMENTO
-              </div>
-              Estou aqui para te escutar e dar as primeiras orientações.
-              <div style={{
-                position: "absolute", top: -8, left: 24,
-                width: 16, height: 16, background: "white",
-                transform: "rotate(45deg)", borderRadius: 3
-              }} />
             </div>
           </div>
         </Reveal>
