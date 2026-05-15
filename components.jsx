@@ -314,8 +314,88 @@ function Nav() {
 
 // ─── Hero ───
 function Hero() {
+  const iframeRef = useRef(null);
+  const playerRef = useRef(null);
+  const sectionRef = useRef(null);
+  const hasLeftRef = useRef(false);
+  const soundInitedRef = useRef(false);
+  const [showPlay, setShowPlay] = useState(false);
+  const [showSoundPrompt, setShowSoundPrompt] = useState(false);
+
+  useEffect(() => {
+    let player, io;
+
+    const initPlayer = () => {
+      if (!iframeRef.current) return;
+      player = new window.Vimeo.Player(iframeRef.current);
+      playerRef.current = player;
+
+      player.ready().then(() => {
+        if (soundInitedRef.current) return;
+        soundInitedRef.current = true;
+        if (localStorage.getItem("dandara_sound") === "1") {
+          player.setMuted(false).catch(() => {});
+        } else {
+          setShowSoundPrompt(true);
+        }
+      });
+
+      const section = sectionRef.current;
+      if (!section) return;
+      io = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            if (!hasLeftRef.current) player.play().catch(() => {});
+          } else {
+            player.getPaused().then(paused => {
+              if (!paused) {
+                player.pause();
+                hasLeftRef.current = true;
+                setShowSoundPrompt(false);
+                setShowPlay(true);
+              }
+            });
+          }
+        },
+        { threshold: 0.2 }
+      );
+      io.observe(section);
+    };
+
+    if (window.Vimeo) {
+      initPlayer();
+    } else {
+      const script = document.createElement("script");
+      script.src = "https://player.vimeo.com/api/player.js";
+      script.onload = initPlayer;
+      document.body.appendChild(script);
+    }
+
+    return () => {
+      if (io) io.disconnect();
+      if (player) player.destroy().catch(() => {});
+    };
+  }, []);
+
+  const handleManualPlay = () => {
+    const player = playerRef.current;
+    if (!player) return;
+    player.play().catch(() => {});
+    setShowPlay(false);
+    if (localStorage.getItem("dandara_sound") !== "1") setShowSoundPrompt(true);
+  };
+
+  const activateSound = () => {
+    const player = playerRef.current;
+    if (!player) return;
+    player.setMuted(false).catch(() => {});
+    player.setVolume(1).catch(() => {});
+    localStorage.setItem("dandara_sound", "1");
+    setShowSoundPrompt(false);
+  };
+
   return (
-    <section data-screen-label="01 Hero" style={{
+    <section ref={sectionRef} data-screen-label="01 Hero" style={{
       minHeight: "92vh", position: "relative", overflow: "hidden",
       background: "linear-gradient(135deg, #E84118 0%, #D4745E 100%)",
       display: "flex", alignItems: "center", paddingTop: 200,
@@ -398,31 +478,63 @@ function Hero() {
             }}>
               <div style={{
                 width: "100%", height: "100%", borderRadius: "50%", overflow: "hidden",
-                background: "linear-gradient(180deg, #F8E2D5 0%, #E8B89E 100%)",
-                position: "relative"
+                background: "#000", position: "relative"
               }}>
-                <DandaraAvatar size={360} />
+                <iframe
+                  ref={iframeRef}
+                  src="https://player.vimeo.com/video/1192478851?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&loop=1"
+                  frameBorder="0"
+                  allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+                  title="Dandara dos Palmares"
+                  style={{
+                    position: "absolute",
+                    top: "50%", left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    width: "300%", height: "300%",
+                    border: "none", pointerEvents: "none",
+                  }}
+                />
+                {showPlay && (
+                  <button
+                    onClick={handleManualPlay}
+                    style={{
+                      position: "absolute", inset: 0,
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      background: "rgba(0,0,0,0.35)",
+                      border: "none", cursor: "pointer", borderRadius: "50%",
+                    }}
+                  >
+                    <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+                      <circle cx="28" cy="28" r="28" fill="rgba(255,255,255,0.18)" />
+                      <circle cx="28" cy="28" r="22" fill="rgba(255,255,255,0.85)" />
+                      <path d="M23 20 L38 28 L23 36 Z" fill="#E84118" />
+                    </svg>
+                  </button>
+                )}
+                {showSoundPrompt && (
+                  <button
+                    onClick={activateSound}
+                    style={{
+                      position: "absolute", inset: 0,
+                      display: "flex", flexDirection: "column",
+                      alignItems: "center", justifyContent: "center", gap: 10,
+                      background: "rgba(0,0,0,0.52)", backdropFilter: "blur(4px)",
+                      border: "none", cursor: "pointer", borderRadius: "50%",
+                    }}
+                  >
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+                      <path d="M11 5 L6 9 H2 V15 H6 L11 19 V5Z" fill="white" />
+                      <path d="M15.5 8.5 C17 10 17 14 15.5 15.5" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none"/>
+                      <path d="M18.5 6 C21.5 9 21.5 15 18.5 18" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none"/>
+                    </svg>
+                    <span style={{
+                      fontFamily: "Inter, sans-serif", fontSize: 11, fontWeight: 600,
+                      color: "white", letterSpacing: "0.06em", textTransform: "uppercase",
+                      textAlign: "center", lineHeight: 1.3, maxWidth: 100,
+                    }}>Toque para ativar o som</span>
+                  </button>
+                )}
               </div>
-            </div>
-            {/* speech tag */}
-            <div style={{
-              position: "absolute", bottom: 8, right: -10,
-              background: "white", color: "#0A0A0A",
-              padding: "12px 16px", borderRadius: 16,
-              boxShadow: "0 12px 30px rgba(0,0,0,0.18)",
-              fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 500,
-              maxWidth: 220, lineHeight: 1.4,
-              animation: "floaty 6s ease-in-out infinite reverse"
-            }}>
-              <div style={{ fontWeight: 600, color: "#E84118", fontSize: 11, letterSpacing: "0.08em", marginBottom: 4 }}>
-                DANDARA · IA DE ACOLHIMENTO
-              </div>
-              Estou aqui para te escutar e dar as primeiras orientações.
-              <div style={{
-                position: "absolute", top: -8, left: 24,
-                width: 16, height: 16, background: "white",
-                transform: "rotate(45deg)", borderRadius: 3
-              }} />
             </div>
           </div>
         </Reveal>
