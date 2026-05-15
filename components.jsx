@@ -314,66 +314,88 @@ function Nav() {
 
 // ─── Hero ───
 function Hero() {
-  const videoRef = useRef(null);
+  const iframeRef = useRef(null);
+  const playerRef = useRef(null);
+  const sectionRef = useRef(null);
   const hasLeftRef = useRef(false);
   const soundInitedRef = useRef(false);
   const [showPlay, setShowPlay] = useState(false);
   const [showSoundPrompt, setShowSoundPrompt] = useState(false);
 
-  const handleVideoCanPlay = () => {
-    if (soundInitedRef.current) return;
-    soundInitedRef.current = true;
-    const el = videoRef.current;
-    if (!el) return;
-    if (localStorage.getItem("dandara_sound") === "1") {
-      el.muted = false;
-    } else {
-      setShowSoundPrompt(true);
-    }
-  };
-
   useEffect(() => {
-    const el = videoRef.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          if (!hasLeftRef.current) {
-            el.play().catch(() => {});
-          }
+    let player, io;
+
+    const initPlayer = () => {
+      if (!iframeRef.current) return;
+      player = new window.Vimeo.Player(iframeRef.current);
+      playerRef.current = player;
+
+      player.ready().then(() => {
+        if (soundInitedRef.current) return;
+        soundInitedRef.current = true;
+        if (localStorage.getItem("dandara_sound") === "1") {
+          player.setMuted(false).catch(() => {});
         } else {
-          if (!el.paused) {
-            el.pause();
-            hasLeftRef.current = true;
-            setShowSoundPrompt(false);
-            setShowPlay(true);
-          }
+          setShowSoundPrompt(true);
         }
-      },
-      { threshold: 0.2 }
-    );
-    io.observe(el);
-    return () => io.disconnect();
+      });
+
+      const section = sectionRef.current;
+      if (!section) return;
+      io = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            if (!hasLeftRef.current) player.play().catch(() => {});
+          } else {
+            player.getPaused().then(paused => {
+              if (!paused) {
+                player.pause();
+                hasLeftRef.current = true;
+                setShowSoundPrompt(false);
+                setShowPlay(true);
+              }
+            });
+          }
+        },
+        { threshold: 0.2 }
+      );
+      io.observe(section);
+    };
+
+    if (window.Vimeo) {
+      initPlayer();
+    } else {
+      const script = document.createElement("script");
+      script.src = "https://player.vimeo.com/api/player.js";
+      script.onload = initPlayer;
+      document.body.appendChild(script);
+    }
+
+    return () => {
+      if (io) io.disconnect();
+      if (player) player.destroy().catch(() => {});
+    };
   }, []);
 
   const handleManualPlay = () => {
-    const el = videoRef.current;
-    if (!el) return;
-    el.play().catch(() => {});
+    const player = playerRef.current;
+    if (!player) return;
+    player.play().catch(() => {});
     setShowPlay(false);
     if (localStorage.getItem("dandara_sound") !== "1") setShowSoundPrompt(true);
   };
 
   const activateSound = () => {
-    const el = videoRef.current;
-    if (!el) return;
-    el.muted = false;
+    const player = playerRef.current;
+    if (!player) return;
+    player.setMuted(false).catch(() => {});
+    player.setVolume(1).catch(() => {});
     localStorage.setItem("dandara_sound", "1");
     setShowSoundPrompt(false);
   };
 
   return (
-    <section data-screen-label="01 Hero" style={{
+    <section ref={sectionRef} data-screen-label="01 Hero" style={{
       minHeight: "92vh", position: "relative", overflow: "hidden",
       background: "linear-gradient(135deg, #E84118 0%, #D4745E 100%)",
       display: "flex", alignItems: "center", paddingTop: 200,
@@ -456,21 +478,20 @@ function Hero() {
             }}>
               <div style={{
                 width: "100%", height: "100%", borderRadius: "50%", overflow: "hidden",
-                background: "#000",
-                position: "relative"
+                background: "#000", position: "relative"
               }}>
-                <video
-                  ref={videoRef}
-                  src="dandara.mp4"
-                  autoPlay
-                  muted
-                  playsInline
-                  loop
-                  onCanPlay={handleVideoCanPlay}
+                <iframe
+                  ref={iframeRef}
+                  src="https://player.vimeo.com/video/1192478851?background=1&autopause=0&app_id=58479"
+                  frameBorder="0"
+                  allow="autoplay; fullscreen; picture-in-picture"
+                  title="Dandara dos Palmares"
                   style={{
-                    width: "100%", height: "100%",
-                    objectFit: "cover",
-                    display: "block",
+                    position: "absolute",
+                    top: "50%", left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    width: "300%", height: "300%",
+                    border: "none", pointerEvents: "none",
                   }}
                 />
                 {showPlay && (
@@ -480,8 +501,7 @@ function Hero() {
                       position: "absolute", inset: 0,
                       display: "flex", alignItems: "center", justifyContent: "center",
                       background: "rgba(0,0,0,0.35)",
-                      border: "none", cursor: "pointer",
-                      borderRadius: "50%",
+                      border: "none", cursor: "pointer", borderRadius: "50%",
                     }}
                   >
                     <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
