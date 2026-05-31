@@ -86,29 +86,6 @@ function App() {
         </div>
       </Section>
 
-      {/* Casos atendidos */}
-      <Section id="casos" label="02 Casos" eyebrow="Casos Atendidos" title="Mais de 340 ações em curso. Aqui estão alguns." bg="#0A0A0A" color="white">
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 20 }} className="svc-grid">
-          {cases.map(c => (
-            <div key={c.id} style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 16, padding: 24 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-                <span style={{ fontFamily: "Inter, sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.1em", color: "rgba(255,255,255,0.55)", textTransform: "uppercase" }}>{c.id}</span>
-                <span style={{ background: c.status === "vitória" ? "#2D6A4F" : "#D4745E", color: "white", padding: "4px 10px", borderRadius: 999, fontFamily: "Inter, sans-serif", fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em" }}>{c.status}</span>
-              </div>
-              <div style={{ fontFamily: "Inter, sans-serif", fontSize: 12, fontWeight: 600, color: "#E84118", letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 8 }}>{c.area} · {c.date}</div>
-              <h3 style={{ fontFamily: "Syne, sans-serif", fontWeight: 600, fontSize: 22, margin: 0, letterSpacing: "-0.01em", textWrap: "balance" }}>{c.title}</h3>
-            </div>
-          ))}
-        </div>
-        <div style={{ marginTop: 32, display: "flex", gap: 32, padding: "24px 0", borderTop: "1px solid rgba(255,255,255,0.12)" }}>
-          {[{ n: "340+", l: "ações em curso" }, { n: "82%", l: "vitórias ou acordos" }, { n: "1.200+", l: "vidas atendidas" }].map(s => (
-            <div key={s.l}>
-              <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 32, color: "white", letterSpacing: "-0.02em", lineHeight: 1 }}>{s.n}</div>
-              <div style={{ fontFamily: "Inter, sans-serif", fontSize: 13, color: "rgba(255,255,255,0.65)", marginTop: 4 }}>{s.l}</div>
-            </div>
-          ))}
-        </div>
-      </Section>
 
       {/* Marcos Legais */}
       <Section id="marcos" label="03 Marcos Legais" eyebrow="Marcos Legais" title="A lei é o seu escudo. Conheça seus direitos.">

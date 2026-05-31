@@ -8,9 +8,9 @@ const PAGE_LINKS = [
   { label: "Instituto", href: "instituto.html" },
 ];
 
-const WHATS_URL = "https://wa.me/5511999999999?text=Ol%C3%A1%2C%20preciso%20de%20acolhimento";
-const PHONE = "0800 123 4567";
-const PHONE_TEL = "tel:08001234567";
+const WHATS_URL = "https://wa.me/5511953985365?text=Ol%C3%A1%2C%20vim%20do%20site%20Acolhe%20Black%20e%20preciso%20de%20ajuda...";
+const PHONE = "11 3325-1000 ramal 110";
+const PHONE_TEL = "tel:+551133251000";
 const ADDRESS_LINES = [
   "Faculdade Zumbi dos Palmares",
   "Av. Santos Dumont, 843 — Luz",

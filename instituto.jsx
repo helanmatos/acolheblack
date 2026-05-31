@@ -1,6 +1,216 @@
 // Instituto page
 const { PgReveal: IRev, PgIcon: II, PgNav: INav, PgFooter: IFoot } = window;
 
+// ─── Supabase ────────────────────────────────────────────────────────────────
+// Substitua SUPABASE_ANON_KEY pela sua chave:
+// Painel Supabase → Settings → API → Project API keys → anon public
+const SUPABASE_URL     = "https://nrffuuoeqdibdjwamkbd.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5yZmZ1dW9lcWRpYmRqd2Fta2JkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxMjU0NjAsImV4cCI6MjA3NDcwMTQ2MH0.mFfa9EleAv2cLrRZEEaDZ1C2CUHZbnZ8ppdyYH6mDyI";
+// ─────────────────────────────────────────────────────────────────────────────
+
+function FormModal({ tipo, onFechar }) {
+  const [dados, setDados] = React.useState({
+    nome: "", email: "", telefone: "",
+    organizacao: "", area_interesse: "", disponibilidade: "", mensagem: ""
+  });
+  const [status, setStatus] = React.useState("idle"); // idle | enviando | sucesso | erro
+
+  const config = {
+    vaga: {
+      titulo: "Vagas abertas",
+      cor: "#E84118",
+      areas: ["Advogado(a) trabalhista", "Psicólogo(a) clínico", "Coordenador(a) regional NE"],
+      labelArea: "Cargo de interesse",
+    },
+    voluntariado: {
+      titulo: "Voluntariado",
+      cor: "#2D6A4F",
+      areas: ["Jurídica", "Psicossocial", "Comunicação", "Articulação"],
+      labelArea: "Área de atuação",
+      temDisponibilidade: true,
+    },
+    parceria: {
+      titulo: "Parcerias",
+      cor: "#D4745E",
+      areas: ["Empresa", "Universidade", "Movimento social", "Outro"],
+      labelArea: "Tipo de organização",
+      temOrganizacao: true,
+    },
+  };
+
+  const c = config[tipo];
+  const set = (campo, valor) => setDados(prev => ({ ...prev, [campo]: valor }));
+
+  // Fecha com Escape
+  React.useEffect(() => {
+    const fn = (e) => { if (e.key === "Escape") onFechar(); };
+    document.addEventListener("keydown", fn);
+    return () => document.removeEventListener("keydown", fn);
+  }, []);
+
+  const enviar = async (e) => {
+    e.preventDefault();
+    setStatus("enviando");
+    try {
+      const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      const { error } = await client.from("acolheblack_formularios").insert({
+        tipo,
+        nome:           dados.nome,
+        email:          dados.email,
+        telefone:       dados.telefone    || null,
+        organizacao:    dados.organizacao  || null,
+        area_interesse: dados.area_interesse || null,
+        disponibilidade:dados.disponibilidade || null,
+        mensagem:       dados.mensagem    || null,
+      });
+      if (error) throw error;
+      setStatus("sucesso");
+    } catch (err) {
+      console.error("Erro Supabase:", err);
+      setStatus("erro");
+    }
+  };
+
+  const inp = {
+    width: "100%", padding: "12px 16px", fontFamily: "Inter, sans-serif",
+    fontSize: 14, border: "1px solid rgba(10,10,10,0.18)", borderRadius: 10,
+    background: "#F8F5F1", color: "#0A0A0A", outline: "none", boxSizing: "border-box", marginTop: 6,
+  };
+  const lbl = { fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 600, color: "rgba(10,10,10,0.72)", display: "block" };
+  const row = { marginBottom: 16 };
+
+  return (
+    <div
+      onClick={(e) => { if (e.target === e.currentTarget) onFechar(); }}
+      style={{
+        position: "fixed", inset: 0, background: "rgba(10,10,10,0.65)", zIndex: 1000,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        padding: 24, backdropFilter: "blur(4px)",
+      }}
+    >
+      <div style={{
+        background: "white", borderRadius: 20, padding: 40, width: "100%",
+        maxWidth: 540, maxHeight: "90vh", overflowY: "auto", position: "relative",
+        boxShadow: "0 32px 80px rgba(10,10,10,0.28)",
+      }}>
+        {/* Botão fechar */}
+        <button onClick={onFechar} style={{
+          position: "absolute", top: 18, right: 18, background: "#F8F5F1",
+          border: "none", borderRadius: "50%", width: 36, height: 36,
+          cursor: "pointer", fontSize: 20, lineHeight: 1, display: "flex",
+          alignItems: "center", justifyContent: "center", color: "#0A0A0A",
+        }}>×</button>
+
+        {status === "sucesso" ? (
+          /* Tela de sucesso */
+          <div style={{ textAlign: "center", padding: "48px 0" }}>
+            <div style={{
+              width: 64, height: 64, borderRadius: "50%", background: c.cor,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              margin: "0 auto 20px", fontSize: 28, color: "white",
+            }}>✓</div>
+            <h3 style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 22, margin: "0 0 10px" }}>
+              Mensagem recebida!
+            </h3>
+            <p style={{ fontFamily: "Inter, sans-serif", fontSize: 14, color: "rgba(10,10,10,0.68)", lineHeight: 1.65, margin: "0 0 28px" }}>
+              Em breve alguém da equipe ACOLHE entrará em contato com você.
+            </p>
+            <button onClick={onFechar} style={{
+              padding: "12px 32px", background: c.cor, color: "white", border: "none",
+              borderRadius: 10, fontFamily: "Inter, sans-serif", fontSize: 14,
+              fontWeight: 600, cursor: "pointer",
+            }}>Fechar</button>
+          </div>
+        ) : (
+          /* Formulário */
+          <form onSubmit={enviar}>
+            <div style={{ borderLeft: `4px solid ${c.cor}`, paddingLeft: 14, marginBottom: 28 }}>
+              <div style={{ fontFamily: "Inter, sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", color: c.cor, textTransform: "uppercase", marginBottom: 4 }}>
+                Trabalhe conosco
+              </div>
+              <h3 style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 22, margin: 0, letterSpacing: "-0.01em" }}>
+                {c.titulo}
+              </h3>
+            </div>
+
+            <div style={row}>
+              <label style={lbl}>Nome completo *</label>
+              <input required style={inp} value={dados.nome}
+                onChange={e => set("nome", e.target.value)} placeholder="Seu nome completo" />
+            </div>
+
+            <div style={row}>
+              <label style={lbl}>E-mail *</label>
+              <input required type="email" style={inp} value={dados.email}
+                onChange={e => set("email", e.target.value)} placeholder="seu@email.com" />
+            </div>
+
+            <div style={row}>
+              <label style={lbl}>Telefone</label>
+              <input style={inp} value={dados.telefone}
+                onChange={e => set("telefone", e.target.value)} placeholder="(00) 00000-0000" />
+            </div>
+
+            {c.temOrganizacao && (
+              <div style={row}>
+                <label style={lbl}>Organização *</label>
+                <input required style={inp} value={dados.organizacao}
+                  onChange={e => set("organizacao", e.target.value)} placeholder="Nome da organização" />
+              </div>
+            )}
+
+            <div style={row}>
+              <label style={lbl}>{c.labelArea}</label>
+              <select style={inp} value={dados.area_interesse}
+                onChange={e => set("area_interesse", e.target.value)}>
+                <option value="">Selecione...</option>
+                {c.areas.map(a => <option key={a} value={a}>{a}</option>)}
+              </select>
+            </div>
+
+            {c.temDisponibilidade && (
+              <div style={row}>
+                <label style={lbl}>Disponibilidade semanal</label>
+                <select style={inp} value={dados.disponibilidade}
+                  onChange={e => set("disponibilidade", e.target.value)}>
+                  <option value="">Selecione...</option>
+                  <option>Até 4h/semana</option>
+                  <option>4–8h/semana</option>
+                  <option>Mais de 8h/semana</option>
+                </select>
+              </div>
+            )}
+
+            <div style={row}>
+              <label style={lbl}>Mensagem</label>
+              <textarea style={{ ...inp, resize: "vertical", minHeight: 96 }}
+                value={dados.mensagem}
+                onChange={e => set("mensagem", e.target.value)}
+                placeholder="Conte um pouco sobre você e sua motivação..." />
+            </div>
+
+            {status === "erro" && (
+              <p style={{ fontFamily: "Inter, sans-serif", fontSize: 13, color: "#E84118", marginBottom: 12 }}>
+                Erro ao enviar. Verifique sua conexão e tente novamente.
+              </p>
+            )}
+
+            <button type="submit" disabled={status === "enviando"} style={{
+              width: "100%", padding: "14px 0",
+              background: status === "enviando" ? "rgba(10,10,10,0.25)" : c.cor,
+              color: "white", border: "none", borderRadius: 10,
+              fontFamily: "Inter, sans-serif", fontSize: 15, fontWeight: 600,
+              cursor: status === "enviando" ? "not-allowed" : "pointer", transition: "background 0.2s",
+            }}>
+              {status === "enviando" ? "Enviando..." : "Enviar"}
+            </button>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function ISection({ id, label, eyebrow, title, children, bg = "#F8F5F1", color = "#0A0A0A" }) {
   return (
     <IRev>
@@ -16,6 +226,8 @@ function ISection({ id, label, eyebrow, title, children, bg = "#F8F5F1", color =
 }
 
 function App() {
+  const [modalAberto, setModalAberto] = React.useState(null);
+
   const team = [
     { n: "Aline Souza", r: "Diretora-executiva", b: "Advogada antidiscriminatória, 12 anos no movimento negro." },
     { n: "Dr. Marcos Lima", r: "Coordenação Jurídica", b: "Especialista em direitos humanos e Lei 7.716/89." },
@@ -55,39 +267,28 @@ function App() {
 
       {/* Quem somos */}
       <ISection id="quem-somos" label="01 Quem somos" eyebrow="Quem somos" title="Nascemos da urgência. Crescemos pela escuta.">
-        <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: 48, alignItems: "start" }} className="svc-grid">
-          <p style={{ fontFamily: "Inter, sans-serif", fontSize: 17, lineHeight: 1.65, color: "rgba(10,10,10,0.78)", margin: 0, textWrap: "pretty" }}>
+        <p style={{ fontFamily: "Inter, sans-serif", fontSize: 17, lineHeight: 1.65, color: "rgba(10,10,10,0.78)", margin: 0, textWrap: "pretty", maxWidth: 760 }}>
             O ACOLHE é uma iniciativa da <strong>Universidade Zumbi dos Palmares</strong> — primeira instituição de ensino superior do Brasil com foco na promoção da igualdade racial, fundada em 2003 em São Paulo. Em 2021, em parceria com a Fundação PROCON-SP, a Zumbi criou o <strong>PROCON Racial</strong>: o primeiro canal exclusivo do Brasil para denúncias de discriminação racial no consumo.
             <br /><br />
             O ACOLHE reúne em uma só rede escuta qualificada, cuidado psicológico, orientação jurídica pelo ACOLHE JUS — com 20 advogados voluntários — e a <strong>Câmara de Mediação Racial</strong>, mecanismo especializado que resolve conflitos 3 a 5 vezes mais rápido que a via judicial. Nosso compromisso é com a dignidade e com a transformação estrutural que cada caso individual carrega.
           </p>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-            {[
-              { n: "1.200+", l: "vidas atendidas" },
-              { n: "340+", l: "ações jurídicas" },
-              { n: "82%", l: "vitórias ou acordos" },
-              { n: "12", l: "estados alcançados" },
-            ].map(s => (
-              <div key={s.l} style={{ background: "white", borderRadius: 14, padding: 22, borderTop: "4px solid #E84118" }}>
-                <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 32, color: "#0A0A0A", letterSpacing: "-0.02em", lineHeight: 1 }}>{s.n}</div>
-                <div style={{ fontFamily: "Inter, sans-serif", fontSize: 13, color: "rgba(10,10,10,0.65)", marginTop: 6 }}>{s.l}</div>
-              </div>
-            ))}
-          </div>
-        </div>
 
-        {/* Equipe */}
-        <h3 style={{ fontFamily: "Syne, sans-serif", fontWeight: 600, fontSize: 24, margin: "64px 0 24px", letterSpacing: "-0.015em" }}>Equipe</h3>
-        <div className="svc-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
-          {team.map(m => (
-            <div key={m.n} style={{ background: "white", borderRadius: 14, padding: 22 }}>
-              <div style={{ width: 56, height: 56, borderRadius: "50%", background: "linear-gradient(135deg, #F4C9B6, #D4745E)", marginBottom: 14 }} />
-              <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 17, marginBottom: 2 }}>{m.n}</div>
-              <div style={{ fontFamily: "Inter, sans-serif", fontSize: 12, fontWeight: 600, color: "#E84118", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>{m.r}</div>
-              <p style={{ fontFamily: "Inter, sans-serif", fontSize: 13, lineHeight: 1.5, color: "rgba(10,10,10,0.7)", margin: 0 }}>{m.b}</p>
+        {/* Equipe — oculta até os dados estarem prontos */}
+        {false && (
+          <>
+            <h3 style={{ fontFamily: "Syne, sans-serif", fontWeight: 600, fontSize: 24, margin: "64px 0 24px", letterSpacing: "-0.015em" }}>Equipe</h3>
+            <div className="svc-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
+              {team.map(m => (
+                <div key={m.n} style={{ background: "white", borderRadius: 14, padding: 22 }}>
+                  <div style={{ width: 56, height: 56, borderRadius: "50%", background: "linear-gradient(135deg, #F4C9B6, #D4745E)", marginBottom: 14 }} />
+                  <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 17, marginBottom: 2 }}>{m.n}</div>
+                  <div style={{ fontFamily: "Inter, sans-serif", fontSize: 12, fontWeight: 600, color: "#E84118", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>{m.r}</div>
+                  <p style={{ fontFamily: "Inter, sans-serif", fontSize: 13, lineHeight: 1.5, color: "rgba(10,10,10,0.7)", margin: 0 }}>{m.b}</p>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </>
+        )}
       </ISection>
 
       {/* Trajetória */}
@@ -116,22 +317,6 @@ function App() {
         </div>
       </ISection>
 
-      {/* Transparência */}
-      <ISection id="transparencia" label="02 Transparência" eyebrow="Transparência" title="Cada real declarado. Cada relatório, público." bg="white">
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }} className="svc-grid">
-          {[
-            { y: "Relatório 2023", d: "Demonstrativo financeiro auditado, atendimentos por estado, indicadores jurídicos.", cta: "Baixar PDF" },
-            { y: "Relatório 2022", d: "Primeiro ano completo de atuação. 480 atendimentos, 120 ações em curso.", cta: "Baixar PDF" },
-            { y: "Política de Doações", d: "Como recebemos, registramos e prestamos contas de cada apoio recebido.", cta: "Ler política" },
-          ].map(r => (
-            <div key={r.y} style={{ background: "#F8F5F1", borderRadius: 16, padding: 28 }}>
-              <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 22, marginBottom: 10, letterSpacing: "-0.01em" }}>{r.y}</div>
-              <p style={{ fontFamily: "Inter, sans-serif", fontSize: 14, lineHeight: 1.55, color: "rgba(10,10,10,0.7)", margin: "0 0 18px" }}>{r.d}</p>
-              <a href="#" style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 600, color: "#E84118", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 8 }}>{r.cta} <II.Arrow size={14} color="#E84118" /></a>
-            </div>
-          ))}
-        </div>
-      </ISection>
 
       {/* Imprensa */}
       <ISection id="imprensa" label="03 Imprensa" eyebrow="Na imprensa" title="O que estão dizendo sobre o ACOLHE.">
@@ -156,16 +341,20 @@ function App() {
 
       {/* Trabalhe conosco */}
       <ISection id="trabalhe" label="04 Trabalhe conosco" eyebrow="Trabalhe conosco" title="Vagas, voluntariado e parcerias." bg="white">
+        {modalAberto && <FormModal tipo={modalAberto} onFechar={() => setModalAberto(null)} />}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }} className="svc-grid">
           {[
-            { t: "Vagas abertas", d: "Advogado(a) trabalhista · Psicólogo(a) clínico · Coordenador(a) regional NE", c: "#E84118" },
-            { t: "Voluntariado", d: "Áreas de atuação: jurídica, psicossocial, comunicação, articulação. Carga horária flexível.", c: "#2D6A4F" },
-            { t: "Parcerias", d: "Empresas, universidades e movimentos podem firmar convênios para ampliar a rede.", c: "#D4745E" },
-          ].map(c => (
-            <div key={c.t} style={{ background: "#F8F5F1", borderRadius: 16, padding: 28, borderLeft: `4px solid ${c.c}` }}>
-              <h3 style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 22, margin: "0 0 10px", letterSpacing: "-0.01em" }}>{c.t}</h3>
-              <p style={{ fontFamily: "Inter, sans-serif", fontSize: 14, lineHeight: 1.55, color: "rgba(10,10,10,0.7)", margin: "0 0 18px", textWrap: "pretty" }}>{c.d}</p>
-              <a href="mailto:rh@acolhe.org.br" style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 600, color: "#0A0A0A", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 8 }}>Quero participar <II.Arrow size={14} /></a>
+            { id: "vaga",         t: "Vagas abertas", d: "Advogado(a) trabalhista · Psicólogo(a) clínico · Coordenador(a) regional NE", c: "#E84118" },
+            { id: "voluntariado", t: "Voluntariado",   d: "Áreas de atuação: jurídica, psicossocial, comunicação, articulação. Carga horária flexível.", c: "#2D6A4F" },
+            { id: "parceria",     t: "Parcerias",      d: "Empresas, universidades e movimentos podem firmar convênios para ampliar a rede.", c: "#D4745E" },
+          ].map(card => (
+            <div key={card.id} style={{ background: "#F8F5F1", borderRadius: 16, padding: 28, borderLeft: `4px solid ${card.c}` }}>
+              <h3 style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: 22, margin: "0 0 10px", letterSpacing: "-0.01em" }}>{card.t}</h3>
+              <p style={{ fontFamily: "Inter, sans-serif", fontSize: 14, lineHeight: 1.55, color: "rgba(10,10,10,0.7)", margin: "0 0 18px", textWrap: "pretty" }}>{card.d}</p>
+              <button
+                onClick={() => setModalAberto(card.id)}
+                style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 600, color: "#0A0A0A", display: "inline-flex", alignItems: "center", gap: 8 }}
+              >Quero participar →</button>
             </div>
           ))}
         </div>

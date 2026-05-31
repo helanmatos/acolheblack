@@ -1,6 +1,6 @@
 // ACOLHE landing page components
 const { useState, useEffect, useRef } = React;
-const WHATS_URL = "https://wa.me/5511999999999?text=Ol%C3%A1%2C%20preciso%20de%20acolhimento";
+const WHATS_URL = "https://wa.me/5511953985365?text=Ol%C3%A1%2C%20vim%20do%20site%20Acolhe%20Black%20e%20preciso%20de%20ajuda...";
 
 // ─── Reveal hook ───
 function useReveal() {
@@ -561,6 +561,7 @@ function DualBoxes() {
       ],
       cta: "Buscar Acolhimento",
       ctaColor: "#E84118",
+      ctaHref: "https://wa.me/5511953985365?text=Oi%2C%20sofri%20preconceito%20em%20rela%C3%A7%C3%B5es%20de%20consumo%20e%20gostaria%20de%20ajuda...",
       illustration: (
         <svg viewBox="0 0 400 300" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.10 }}>
           <ellipse cx="140" cy="150" rx="50" ry="80" fill="white" />
@@ -592,6 +593,7 @@ function DualBoxes() {
       ],
       cta: "Buscar Acolhimento",
       ctaColor: "#2D6A4F",
+      ctaHref: "https://wa.me/5511953985365?text=Oi%2C%20sofri%20preconceito%20e%20preciso%20de%20acolhimento%2Fesclarecimento...",
       illustration: (
         <svg viewBox="0 0 400 300" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.10 }}>
           <line x1="200" y1="40" x2="200" y2="260" stroke="white" strokeWidth="4" />
@@ -695,16 +697,16 @@ function DualBoxes() {
                       ))}
                     </div>
                   )}
-                  <button style={{
+                  <a href={it.ctaHref || WHATS_URL} target="_blank" rel="noopener" style={{
                     background: "white", color: it.ctaColor, border: "none",
                     padding: "14px 22px", borderRadius: 12,
                     fontFamily: "Inter, sans-serif", fontSize: 15, fontWeight: 600,
                     cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 10,
                     boxShadow: "0 8px 24px rgba(0,0,0,0.18)",
-                    transition: "transform .2s ease",
+                    transition: "transform .2s ease", textDecoration: "none",
                   }}>
                     {it.cta} <Icon.Arrow size={14} color={it.ctaColor} />
-                  </button>
+                  </a>
                 </div>
               </div>
             </Reveal>
