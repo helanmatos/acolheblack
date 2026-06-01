@@ -1077,20 +1077,27 @@ function FloatingDocks() {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [messages, chatOpen]);
 
+  const abrirWhats = (texto) => {
+    const url = "https://wa.me/5511953985365?text=" + encodeURIComponent(texto);
+    window.open(url, "_blank", "noopener");
+  };
+
   const send = () => {
     const text = draft.trim();
     if (!text) return;
     setMessages(m => [...m, { who: "me", text }]);
     setDraft("");
     setTimeout(() => {
-      setMessages(m => [...m, {
-        who: "dandara",
-        text: "Te ouvi. Você quer conversar mais sobre isso, ou prefere que eu já te conecte com nossa equipe jurídica ou psicológica?"
-      }]);
-    }, 900);
+      setMessages(m => [...m, { who: "dandara", text: "Abrindo o WhatsApp para você agora... 💬" }]);
+      setTimeout(() => abrirWhats(text), 400);
+    }, 600);
   };
 
-  const quickReplies = ["Sofri racismo agora", "Preciso de advogado", "Não sei se foi racismo"];
+  const quickReplies = [
+    { label: "Sofri racismo agora",      msg: "Sofri racismo agora e preciso de ajuda urgente." },
+    { label: "Preciso de advogado",      msg: "Preciso de orientação jurídica para um caso de racismo." },
+    { label: "Não sei se foi racismo",   msg: "Não sei se o que sofri foi racismo e gostaria de conversar." },
+  ];
 
   return (
     <>
@@ -1158,12 +1165,12 @@ function FloatingDocks() {
               {messages.length === 1 && (
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 4 }}>
                   {quickReplies.map(q => (
-                    <button key={q} onClick={() => { setDraft(q); setTimeout(send, 0); }} style={{
+                    <button key={q.label} onClick={() => abrirWhats(q.msg)} style={{
                       background: "white", border: "1px solid rgba(232,65,24,0.25)",
                       color: "#E84118", padding: "8px 12px", borderRadius: 999,
                       fontFamily: "Inter, sans-serif", fontSize: 12, fontWeight: 500,
                       cursor: "pointer"
-                    }}>{q}</button>
+                    }}>{q.label}</button>
                   ))}
                 </div>
               )}
