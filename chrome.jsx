@@ -8,7 +8,8 @@ const PAGE_LINKS = [
   { label: "Instituto", href: "instituto.html" },
 ];
 
-const WHATS_URL = "https://wa.me/5511953985365?text=Ol%C3%A1%2C%20vim%20do%20site%20Acolhe%20Black%20e%20preciso%20de%20ajuda...";
+const WHATS_URL     = "https://wa.me/5511953985365?text=Ol%C3%A1%2C%20vim%20do%20site%20Acolhe%20Black%20e%20preciso%20de%20ajuda...";
+const WHATS_URGENTE = "https://wa.me/5511953985365?text=Sofri%20racismo%20agora%20e%20preciso%20de%20ajuda%20urgente.";
 const PHONE = "11 3325-1000 ramal 110";
 const PHONE_TEL = "tel:+551133251000";
 const ADDRESS_LINES = [
@@ -170,7 +171,7 @@ function PgNav({ activePath = "" }) {
             }}>{l.label}</a>
           );
         })}
-        <a href={WHATS_URL} target="_blank" rel="noopener" style={{
+        <a href={WHATS_URGENTE} target="_blank" rel="noopener" style={{
           background: scrolled ? "#0A0A0A" : "white",
           color: scrolled ? "white" : "#E84118",
           padding: "10px 18px", borderRadius: 999,
@@ -208,7 +209,7 @@ function PgNav({ activePath = "" }) {
           }}>{l.label}</a>
         );
       })}
-      <a href={WHATS_URL} target="_blank" rel="noopener" onClick={() => setMenuOpen(false)} style={{
+      <a href={WHATS_URGENTE} target="_blank" rel="noopener" onClick={() => setMenuOpen(false)} style={{
         marginTop: 20, background: "#E84118", color: "white",
         padding: "16px 22px", borderRadius: 14, textAlign: "center",
         fontFamily: "Inter, sans-serif", fontSize: 16, fontWeight: 700,

@@ -1,6 +1,7 @@
 // ACOLHE landing page components
 const { useState, useEffect, useRef } = React;
-const WHATS_URL = "https://wa.me/5511953985365?text=Ol%C3%A1%2C%20vim%20do%20site%20Acolhe%20Black%20e%20preciso%20de%20ajuda...";
+const WHATS_URL     = "https://wa.me/5511953985365?text=Ol%C3%A1%2C%20vim%20do%20site%20Acolhe%20Black%20e%20preciso%20de%20ajuda...";
+const WHATS_URGENTE = "https://wa.me/5511953985365?text=Sofri%20racismo%20agora%20e%20preciso%20de%20ajuda%20urgente.";
 
 // ─── Reveal hook ───
 function useReveal() {
@@ -267,13 +268,13 @@ function Nav() {
             opacity: 0.9
           }}>{l.label}</a>
         ))}
-        <button style={{
+        <a href={WHATS_URGENTE} target="_blank" rel="noopener" style={{
           background: scrolled ? "#0A0A0A" : "white",
           color: scrolled ? "white" : "#E84118",
           border: "none", padding: "10px 18px", borderRadius: 999,
           fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 600,
-          cursor: "pointer", letterSpacing: "0.02em",
-        }}>Falar agora</button>
+          cursor: "pointer", letterSpacing: "0.02em", textDecoration: "none",
+        }}>Falar agora</a>
       </div>
       <button className="nav-mobile" onClick={() => setMenuOpen(o => !o)} style={{
         display: "none", background: "transparent", border: "none", cursor: "pointer",
@@ -301,7 +302,7 @@ function Nav() {
           borderBottom: "1px solid rgba(10,10,10,0.07)", letterSpacing: "-0.01em",
         }}>{l.label}</a>
       ))}
-      <a href={WHATS_URL} target="_blank" rel="noopener" onClick={() => setMenuOpen(false)} style={{
+      <a href={WHATS_URGENTE} target="_blank" rel="noopener" onClick={() => setMenuOpen(false)} style={{
         marginTop: 20, background: "#E84118", color: "white",
         padding: "16px 22px", borderRadius: 14, textAlign: "center",
         fontFamily: "Inter, sans-serif", fontSize: 16, fontWeight: 700,
