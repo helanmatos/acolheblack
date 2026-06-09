@@ -315,88 +315,8 @@ function Nav() {
 
 // ─── Hero ───
 function Hero() {
-  const iframeRef = useRef(null);
-  const playerRef = useRef(null);
-  const sectionRef = useRef(null);
-  const hasLeftRef = useRef(false);
-  const soundInitedRef = useRef(false);
-  const [showPlay, setShowPlay] = useState(false);
-  const [showSoundPrompt, setShowSoundPrompt] = useState(false);
-
-  useEffect(() => {
-    let player, io;
-
-    const initPlayer = () => {
-      if (!iframeRef.current) return;
-      player = new window.Vimeo.Player(iframeRef.current);
-      playerRef.current = player;
-
-      player.ready().then(() => {
-        if (soundInitedRef.current) return;
-        soundInitedRef.current = true;
-        if (localStorage.getItem("dandara_sound") === "1") {
-          player.setMuted(false).catch(() => {});
-        } else {
-          setShowSoundPrompt(true);
-        }
-      });
-
-      const section = sectionRef.current;
-      if (!section) return;
-      io = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            if (!hasLeftRef.current) player.play().catch(() => {});
-          } else {
-            player.getPaused().then(paused => {
-              if (!paused) {
-                player.pause();
-                hasLeftRef.current = true;
-                setShowSoundPrompt(false);
-                setShowPlay(true);
-              }
-            });
-          }
-        },
-        { threshold: 0.2 }
-      );
-      io.observe(section);
-    };
-
-    if (window.Vimeo) {
-      initPlayer();
-    } else {
-      const script = document.createElement("script");
-      script.src = "https://player.vimeo.com/api/player.js";
-      script.onload = initPlayer;
-      document.body.appendChild(script);
-    }
-
-    return () => {
-      if (io) io.disconnect();
-      if (player) player.destroy().catch(() => {});
-    };
-  }, []);
-
-  const handleManualPlay = () => {
-    const player = playerRef.current;
-    if (!player) return;
-    player.play().catch(() => {});
-    setShowPlay(false);
-    if (localStorage.getItem("dandara_sound") !== "1") setShowSoundPrompt(true);
-  };
-
-  const activateSound = () => {
-    const player = playerRef.current;
-    if (!player) return;
-    player.setMuted(false).catch(() => {});
-    player.setVolume(1).catch(() => {});
-    localStorage.setItem("dandara_sound", "1");
-    setShowSoundPrompt(false);
-  };
-
   return (
-    <section ref={sectionRef} data-screen-label="01 Hero" style={{
+    <section data-screen-label="01 Hero" style={{
       minHeight: "92vh", position: "relative", overflow: "hidden",
       background: "linear-gradient(135deg, #E84118 0%, #D4745E 100%)",
       display: "flex", alignItems: "center", paddingTop: 200,
@@ -460,82 +380,34 @@ function Hero() {
               racismo no Brasil.
             </p>
           </Reveal>
-
         </div>
 
+        {/* LiveAvatar — Dandara */}
         <Reveal delay={200} className="hero-avatar">
-          <div style={{ position: "relative", display: "grid", placeItems: "center" }}>
+          <div style={{ position: "relative" }}>
+            {/* brilho de fundo */}
             <div style={{
-              position: "absolute", width: 380, height: 380, borderRadius: "50%",
-              background: "radial-gradient(circle, rgba(255,255,255,0.18) 0%, transparent 70%)",
-              filter: "blur(20px)"
+              position: "absolute", inset: -20,
+              background: "radial-gradient(circle, rgba(255,255,255,0.22) 0%, transparent 70%)",
+              filter: "blur(24px)", borderRadius: 32, pointerEvents: "none"
             }} />
+            {/* container com borda e sombra */}
             <div style={{
-              position: "relative", width: 380, height: 380, borderRadius: "50%",
-              background: "linear-gradient(160deg, rgba(255,255,255,0.18), rgba(255,255,255,0.05))",
-              border: "1px solid rgba(255,255,255,0.3)", padding: 10,
-              boxShadow: "0 30px 80px rgba(0,0,0,0.25)",
+              position: "relative", borderRadius: 24,
+              background: "linear-gradient(160deg, rgba(255,255,255,0.2), rgba(255,255,255,0.06))",
+              border: "1px solid rgba(255,255,255,0.35)", padding: 8,
+              boxShadow: "0 30px 80px rgba(0,0,0,0.28)",
               animation: "floaty 6s ease-in-out infinite"
             }}>
-              <div style={{
-                width: "100%", height: "100%", borderRadius: "50%", overflow: "hidden",
-                background: "#000", position: "relative"
-              }}>
-                <iframe
-                  ref={iframeRef}
-                  src="https://player.vimeo.com/video/1192478851?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&loop=1"
-                  frameBorder="0"
-                  allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
-                  title="Dandara dos Palmares"
-                  style={{
-                    position: "absolute",
-                    top: "50%", left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    width: "300%", height: "300%",
-                    border: "none", pointerEvents: "none",
-                  }}
-                />
-                {showPlay && (
-                  <button
-                    onClick={handleManualPlay}
-                    style={{
-                      position: "absolute", inset: 0,
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      background: "rgba(0,0,0,0.35)",
-                      border: "none", cursor: "pointer", borderRadius: "50%",
-                    }}
-                  >
-                    <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
-                      <circle cx="28" cy="28" r="28" fill="rgba(255,255,255,0.18)" />
-                      <circle cx="28" cy="28" r="22" fill="rgba(255,255,255,0.85)" />
-                      <path d="M23 20 L38 28 L23 36 Z" fill="#E84118" />
-                    </svg>
-                  </button>
-                )}
-                {showSoundPrompt && (
-                  <button
-                    onClick={activateSound}
-                    style={{
-                      position: "absolute", inset: 0,
-                      display: "flex", flexDirection: "column",
-                      alignItems: "center", justifyContent: "center", gap: 10,
-                      background: "rgba(0,0,0,0.52)", backdropFilter: "blur(4px)",
-                      border: "none", cursor: "pointer", borderRadius: "50%",
-                    }}
-                  >
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
-                      <path d="M11 5 L6 9 H2 V15 H6 L11 19 V5Z" fill="white" />
-                      <path d="M15.5 8.5 C17 10 17 14 15.5 15.5" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none"/>
-                      <path d="M18.5 6 C21.5 9 21.5 15 18.5 18" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none"/>
-                    </svg>
-                    <span style={{
-                      fontFamily: "Inter, sans-serif", fontSize: 11, fontWeight: 600,
-                      color: "white", letterSpacing: "0.06em", textTransform: "uppercase",
-                      textAlign: "center", lineHeight: 1.3, maxWidth: 100,
-                    }}>Toque para ativar o som</span>
-                  </button>
-                )}
-              </div>
+              <iframe
+                src="https://embed.liveavatar.com/v1/e81ea0a6-e9e7-493b-8327-fa479bf69546?orientation=horizontal"
+                allow="microphone"
+                title="LiveAvatar Embed"
+                style={{
+                  width: "100%", aspectRatio: "16/9",
+                  borderRadius: 18, border: "none", display: "block",
+                }}
+              />
             </div>
           </div>
         </Reveal>
