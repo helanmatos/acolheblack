@@ -52,54 +52,37 @@ function FalarDandaraSection() {
           </PgReveal>
         </div>
 
+        {/* LiveAvatar — Dandara */}
         <PgReveal delay={200}>
-          <InteractiveDandara />
+          <div style={{ position: "relative" }}>
+            {/* brilho de fundo */}
+            <div style={{
+              position: "absolute", inset: -20,
+              background: "radial-gradient(circle, rgba(255,255,255,0.22) 0%, transparent 70%)",
+              filter: "blur(24px)", borderRadius: 32, pointerEvents: "none"
+            }} />
+            {/* container com borda e sombra */}
+            <div style={{
+              position: "relative", borderRadius: 24,
+              background: "linear-gradient(160deg, rgba(255,255,255,0.2), rgba(255,255,255,0.06))",
+              border: "1px solid rgba(255,255,255,0.35)", padding: 8,
+              boxShadow: "0 30px 80px rgba(0,0,0,0.28)",
+              animation: "floaty 6s ease-in-out infinite"
+            }}>
+              <iframe
+                src="https://embed.liveavatar.com/v1/e81ea0a6-e9e7-493b-8327-fa479bf69546?orientation=horizontal"
+                allow="microphone"
+                title="LiveAvatar Embed"
+                style={{
+                  width: "100%", aspectRatio: "16/9",
+                  borderRadius: 18, border: "none", display: "block",
+                }}
+              />
+            </div>
+          </div>
         </PgReveal>
       </div>
     </section>
-  );
-}
-
-function InteractiveDandara() {
-  const [hover, setHover] = aS(false);
-  const [pulse, setPulse] = aS(0);
-  const phrases = [
-    "Estou aqui para te escutar.",
-    "Sem julgamento, no seu tempo.",
-    "Conta o que aconteceu — eu te oriento.",
-    "O acolhimento começa por uma conversa.",
-  ];
-  const [phraseIdx, setPhraseIdx] = aS(0);
-  aE(() => {
-    const t = setInterval(() => setPhraseIdx(i => (i + 1) % phrases.length), 4200);
-    return () => clearInterval(t);
-  }, []);
-  return (
-    <div
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      onClick={() => setPulse(p => p + 1)}
-      style={{ position: "relative", display: "grid", placeItems: "center", cursor: "pointer", userSelect: "none" }}
-    >
-      {/* Soft halo */}
-      <div style={{ position: "absolute", width: 520, height: 520, borderRadius: "50%", background: "radial-gradient(circle, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 65%)", filter: "blur(8px)", animation: "floaty 6s ease-in-out infinite" }} />
-      {/* Expanding ripple on click */}
-      <div key={pulse} style={{ position: "absolute", width: 380, height: 380, borderRadius: "50%", border: "2px solid rgba(255,255,255,0.5)", animation: pulse > 0 ? "rippleOut 1.4s ease-out" : "none", opacity: 0, pointerEvents: "none" }} />
-      {/* Avatar with breathing scale */}
-      <div style={{ position: "relative", transform: hover ? "scale(1.04)" : "scale(1)", transition: "transform .6s cubic-bezier(.2,.7,.2,1)", animation: "breathe 4.8s ease-in-out infinite" }}>
-        <PgDandaraAvatar size={420} />
-        {/* Listening dot */}
-        <div style={{ position: "absolute", right: 36, top: 30, display: "flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.92)", padding: "8px 14px", borderRadius: 999, boxShadow: "0 8px 22px rgba(0,0,0,0.15)" }}>
-          <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#7CFFA1", animation: "pulse 2s infinite" }} />
-          <span style={{ fontFamily: "Inter, sans-serif", fontSize: 11, fontWeight: 600, color: "#0A0A0A", letterSpacing: "0.04em" }}>OUVINDO</span>
-        </div>
-      </div>
-      {/* Speech bubble */}
-      <div style={{ position: "absolute", bottom: -8, background: "white", color: "#0A0A0A", padding: "14px 20px", borderRadius: 18, boxShadow: "0 12px 32px rgba(0,0,0,0.18)", maxWidth: 340, textAlign: "center" }}>
-        <div key={phraseIdx} style={{ fontFamily: "Syne, sans-serif", fontSize: 16, fontWeight: 600, lineHeight: 1.3, animation: "popIn .6s ease both" }}>{phrases[phraseIdx]}</div>
-        <div style={{ fontFamily: "Inter, sans-serif", fontSize: 11, color: "rgba(10,10,10,0.55)", marginTop: 6, letterSpacing: "0.06em", textTransform: "uppercase" }}>Toque para começar</div>
-      </div>
-    </div>
   );
 }
 
